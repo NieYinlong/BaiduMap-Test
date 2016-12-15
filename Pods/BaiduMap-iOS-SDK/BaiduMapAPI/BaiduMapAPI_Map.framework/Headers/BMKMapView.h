@@ -438,7 +438,7 @@ typedef enum {
 
 /**
  *移除一组标注
- *@param annotation 要移除的标注数组
+ *@param annotations 要移除的标注数组
  */
 - (void)removeAnnotations:(NSArray *)annotations;
 
@@ -592,7 +592,7 @@ typedef enum {
 
 /**
  *地图区域改变完成后会调用此接口
- *@param mapview 地图View
+ *@param mapView 地图View
  *@param animated 是否动画
  */
 - (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated;
@@ -615,14 +615,14 @@ typedef enum {
 /**
  *当选中一个annotation views时，调用此接口
  *@param mapView 地图View
- *@param views 选中的annotation views
+ *@param view 选中的annotation views
  */
 - (void)mapView:(BMKMapView *)mapView didSelectAnnotationView:(BMKAnnotationView *)view;
 
 /**
  *当取消选中一个annotation views时，调用此接口
  *@param mapView 地图View
- *@param views 取消选中的annotation views
+ *@param view 取消选中的annotation views
  */
 - (void)mapView:(BMKMapView *)mapView didDeselectAnnotationView:(BMKAnnotationView *)view;
 

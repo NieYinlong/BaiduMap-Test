@@ -15,6 +15,7 @@ typedef enum
     BMK_COORDTYPE_GPS = 0, ///GPS设备采集的原始GPS坐标
     BMK_COORDTYPE_COMMON,  ///google地图、soso地图、aliyun地图、mapabc地图和amap地图所用坐标
 } BMK_COORD_TYPE;
+
 enum {
     BMKMapTypeNone       = 0,               ///< 空白地图
     BMKMapTypeStandard   = 1,               ///< 标准地图
