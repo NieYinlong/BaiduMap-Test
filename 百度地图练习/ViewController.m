@@ -28,6 +28,9 @@
 @property (nonatomic,assign) BMKUserLocation *userLocation;
 
 @property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+
+@property (nonatomic, strong) UIImageView *centerImageView;
+
 @end
 
 @implementation ViewController
@@ -72,15 +75,15 @@
     
   
     
-     BMKMapPoint pointA = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(29, 120));
+    
+    
+    
+    
+    /*计算两点的距离(直线距离)*/
+    BMKMapPoint pointA = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(29, 120));
     BMKMapPoint pointB = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(30, 121));
-    
     CLLocationDistance distance = BMKMetersBetweenMapPoints(pointA, pointB);
-    NSLog(@"🌹====== %.f", distance/1000);
-    
-    
-    
-    
+    NSLog(@"🌹====== %.f km", distance/1000);
     
     
     
@@ -128,6 +131,10 @@
 
     [self actionLoc];
     
+    
+    _centerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"centerLoc"]];
+    _centerImageView.frame = CGRectMake((kScreenWidth-30)/2, (kScreenHeight-30)/2, 30, 30);
+    [self.view addSubview:_centerImageView];
    
 }
 
@@ -166,7 +173,6 @@
     self.userLocation = userLocation;
 
 
-    
 }
 
 
@@ -195,12 +201,8 @@
         
         
         //-------计算两点距离------ start
-        
         BMKMapPoint locPoint = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(self.userLocation.location.coordinate.latitude, self.userLocation.location.coordinate.longitude));
-        
-        
         BMKMapPoint currPoint = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(self.coordinate.latitude, self.coordinate.longitude));
-        
         CLLocationDistance distance = BMKMetersBetweenMapPoints(locPoint, currPoint);
         //-------计算两点距离------ end
         
@@ -223,36 +225,100 @@
     return nil;
 }
 
+//http://www.jianshu.com/p/dc18c6b5be8b
 
-
-
-
-
-
-- (void)mapView:(BMKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
-    
-}
 
 /**
- * 当选中一个annotation views时，调用此接口
- * @param mapView 地图View
- * @param view 选中的annotation views
+ *地图区域改变完成后会调用此接口
+ *@param mapView 地图View
+ *@param animated 是否动画
  */
-- (void)mapView:(BMKMapView *)mapView didSelectAnnotationView:(BMKAnnotationView *)view
-{
+- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+    NSLog(@"====="); // 每当拖动一次地图执行1次改代理方法
     
-  
+    
+    
+    
+    // 中心动画
+    [UIView animateWithDuration:0.6 animations:^{
+        _centerImageView.frame = CGRectMake((kScreenWidth-30)/2 , (kScreenHeight-30)/2 -20, 30, 30);
+    } completion:^(BOOL finished) {
+        _centerImageView.frame = CGRectMake((kScreenWidth-30)/2, (kScreenHeight-30)/2, 30, 30);
+        
+    }];
+    
+    
+    
+    CGFloat centerLongitude = self.mapView.region.center.longitude;
+    CGFloat centerLatitude = self.mapView.region.center.latitude;     //当前屏幕显示范围的经纬度
+    
+    NSLog(@"%.5f====%.5f", centerLatitude, centerLongitude);
+    
+    BMKGeoCodeSearch *search = [[BMKGeoCodeSearch alloc] init];
+    search.delegate = self;
+    CLLocationCoordinate2D coordinate2D;
+    coordinate2D.latitude =centerLatitude;
+    coordinate2D.longitude =centerLongitude;
+    
+    BMKReverseGeoCodeOption *op = [[BMKReverseGeoCodeOption alloc] init];
+    op.reverseGeoPoint = coordinate2D;
+    [search reverseGeoCode:op];
+
+    
+}
+
+//反地理编码
+/**
+ *返回反地理编码搜索结果
+ *@param searcher 搜索对象
+ *@param result 搜索结果
+ *@param error 错误号，@see BMKSearchErrorCode
+ */
+- (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error {
+    
+    NSLog(@"😆👌====== %@", result);
     
 }
 
 
 
+///**
+// *地图渲染每一帧画面过程中，以及每次需要重绘地图时（例如添加覆盖物）都会调用此接口
+// *@param mapView 地图View
+// *@param status 此时地图的状态
+// */
+//- (void)mapView:(BMKMapView *)mapView onDrawMapFrame:(BMKMapStatus*)status {
+//    NSLog(@"=====%@", status); // 执行多次
+//}
 
 
-// test
-- (void)mapview:(BMKMapView *)mapView onLongClick:(CLLocationCoordinate2D)coordinate {
-    NSLog(@"长按地图 调用此方法");
-}
+
+
+//
+//- (void)mapView:(BMKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
+//    
+//}
+//
+///**
+// * 当选中一个annotation views时，调用此接口
+// * @param mapView 地图View
+// * @param view 选中的annotation views
+// */
+//- (void)mapView:(BMKMapView *)mapView didSelectAnnotationView:(BMKAnnotationView *)view
+//{
+//    
+//  
+//    
+//}
+//
+//
+//
+//
+//
+//// test
+//- (void)mapview:(BMKMapView *)mapView onLongClick:(CLLocationCoordinate2D)coordinate {
+//    NSLog(@"长按地图 调用此方法");
+//}
 
 
 

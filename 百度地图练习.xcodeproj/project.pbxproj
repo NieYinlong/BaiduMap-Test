@@ -17,6 +17,7 @@
 		9D05756F1DFE981600115AE7 /* ______Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D05756E1DFE981600115AE7 /* ______Tests.m */; };
 		9D05757A1DFE981700115AE7 /* ______UITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D0575791DFE981700115AE7 /* ______UITests.m */; };
 		9D108A741E027EFF00EA63CB /* carImg.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D108A731E027EFF00EA63CB /* carImg.png */; };
+		9D477A2B1E03DB6400A34475 /* centerLoc.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D477A2A1E03DB6400A34475 /* centerLoc.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		9D05757B1DFE981700115AE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9D108A731E027EFF00EA63CB /* carImg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = carImg.png; sourceTree = "<group>"; };
 		9D26299D1DFFD1F00071E0FA /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		9D477A2A1E03DB6400A34475 /* centerLoc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = centerLoc.png; sourceTree = "<group>"; };
 		BA637D1A500A620F7F8F2278 /* libPods-百度地图练习.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-百度地图练习.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -119,6 +121,7 @@
 		9D0575531DFE981600115AE7 /* 百度地图练习 */ = {
 			isa = PBXGroup;
 			children = (
+				9D477A2A1E03DB6400A34475 /* centerLoc.png */,
 				9D108A731E027EFF00EA63CB /* carImg.png */,
 				9D0575571DFE981600115AE7 /* AppDelegate.h */,
 				9D0575581DFE981600115AE7 /* AppDelegate.m */,
@@ -284,6 +287,7 @@
 				9D108A741E027EFF00EA63CB /* carImg.png in Resources */,
 				9D0575641DFE981600115AE7 /* LaunchScreen.storyboard in Resources */,
 				9D0575611DFE981600115AE7 /* Assets.xcassets in Resources */,
+				9D477A2B1E03DB6400A34475 /* centerLoc.png in Resources */,
 				9D05755F1DFE981600115AE7 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
