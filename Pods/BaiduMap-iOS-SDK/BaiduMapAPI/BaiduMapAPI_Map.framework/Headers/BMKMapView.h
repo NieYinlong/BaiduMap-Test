@@ -15,6 +15,11 @@
 #import "BMKHeatMap.h"
 #import "BMKBaseIndoorMapInfo.h"
 
+// 百度没有引入以内下面两个头文件, 这里把他引入
+#import "BMKPinAnnotationView.h"
+#import "BMKPointAnnotation.h"
+
+
 @protocol BMKMapViewDelegate;
 
 ///点击地图标注返回数据结构

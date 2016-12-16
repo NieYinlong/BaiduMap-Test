@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import <AFNetworking.h>
+#import <BaiduMapAPI_Map/BMKMapView.h>//只引入所需的单个头文件
 
 
 @interface ViewController ()<BMKMapViewDelegate,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate>
@@ -35,15 +36,38 @@
     _mapView.delegate = self;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    // 添加一个PointAnnotation
+
+    for (int i = 0; i < 5; i++) {
+        BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
+        CLLocationCoordinate2D coor;
+        coor.latitude = 30+i*2;
+        coor.longitude = 106.404+i*2;
+        annotation.coordinate = coor;//self.userLocation.location.coordinate;
+        annotation.title = @"这里是杭州";
+        [_mapView addAnnotation:annotation];
+    }
+  
+
+    
+    
+}
+
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     _mapView.delegate = nil;
 }
 
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
   
+    
     
     
     
@@ -96,7 +120,7 @@
 
 #pragma mark - 点击定位
 - (void)actionLoc {
-    _mapView.zoomLevel = 19;//地图级别
+    _mapView.zoomLevel = 12;// 地图比例尺级别，在手机上当前可使用的级别为3-21级
     _mapView.showsUserLocation = YES;//显示定位图层
     [_mapView setCenterCoordinate:self.userLocation.location.coordinate];
     
@@ -126,6 +150,9 @@
     _mapView.showsUserLocation = YES;//显示定位图层
     [_mapView updateLocationData:userLocation];
     
+    self.userLocation = userLocation;
+
+    
     
 //
 //    
@@ -143,16 +170,18 @@
 
 
 
-//- (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id<BMKAnnotation>)annotation
-//{
-//    
-//    BMKAnnotationView *annView = [[BMKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"TTTT"];
-//    return annView;
-//}
-
+/**
+ *根据anntation生成对应的View
+ *@param mapView 地图View
+ *@param annotation 指定的标注
+ *@return 生成的标注View
+ */
 - (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id <BMKAnnotation>)annotation {
     
-    return nil;
+    BMKAnnotationView *annView = [[BMKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"TESTSS"];
+    annView.image = [UIImage imageNamed:@"carImg.png"];
+    
+    return annView;
 }
 
 - (void)mapView:(BMKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
@@ -162,12 +191,10 @@
 
 // test
 - (void)mapview:(BMKMapView *)mapView onLongClick:(CLLocationCoordinate2D)coordinate {
-    NSLog(@"长按");
+    NSLog(@"长按地图 调用此方法");
 }
 
-- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-    NSLog(@"🌹");
-}
+
 
 
 
