@@ -27,7 +27,7 @@
 
 @property (nonatomic,assign) BMKUserLocation *userLocation;
 
-
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
 @end
 
 @implementation ViewController
@@ -43,11 +43,15 @@
     for (int i = 0; i < 5; i++) {
         BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
         CLLocationCoordinate2D coor;
-        coor.latitude = 30+i*2;
-        coor.longitude = 106.404+i*2;
+        coor.latitude = 29.1625+i*0.06;
+        coor.longitude = 120.432+i*0.06;
         annotation.coordinate = coor;//self.userLocation.location.coordinate;
         annotation.title = @"这里是杭州";
         [_mapView addAnnotation:annotation];
+        
+        self.coordinate = annotation.coordinate;
+        
+        
     }
   
 
@@ -67,6 +71,15 @@
     [super viewDidLoad];
     
   
+    
+     BMKMapPoint pointA = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(29, 120));
+    BMKMapPoint pointB = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(30, 121));
+    
+    CLLocationDistance distance = BMKMetersBetweenMapPoints(pointA, pointB);
+    NSLog(@"🌹====== %.f", distance/1000);
+    
+    
+    
     
     
     
@@ -130,7 +143,7 @@
 - (void)didUpdateUserHeading:(BMKUserLocation *)userLocation
 {
     
-     self.userLocation = userLocation;
+    self.userLocation = userLocation;
     
     NSLog(@"heading is %f",userLocation.location.coordinate.latitude);
     NSLog(@"heading is %f",userLocation.location.coordinate.longitude);
@@ -152,20 +165,10 @@
     
     self.userLocation = userLocation;
 
+
     
-    
-//
-//    
-//    
-//    CLLocationCoordinate2D coord;
-//    coord.latitude=userLocation.location.coordinate.latitude;
-//    coord.longitude=userLocation.location.coordinate.longitude;
-//    BMKCoordinateRegion region ;//表示范围的结构体
-//    region.center = coord;//指定地图中心点
-//    region.span.latitudeDelta = 0.1;//经度范围（设置为0.1表示显示范围为0.2的纬度范围）
-//    region.span.longitudeDelta = 0.1;//纬度范围
-//    [_mapView setRegion:region animated:YES];
 }
+
 
 
 
@@ -175,18 +178,75 @@
  *@param mapView 地图View
  *@param annotation 指定的标注
  *@return 生成的标注View
+ * 注意:: 只有创建了BMKPointAnnotation, 该代理才会执行
  */
 - (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id <BMKAnnotation>)annotation {
+
     
-    BMKAnnotationView *annView = [[BMKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"TESTSS"];
-    annView.image = [UIImage imageNamed:@"carImg.png"];
     
-    return annView;
+//     删除标注方法如下：
+//    if (annotation != nil) {
+//        [_mapView removeAnnotation:annotation];
+//    }
+    
+    if ([annotation isKindOfClass:[BMKPointAnnotation class]]) {
+        BMKAnnotationView *annView = [[BMKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"TESTSS"];
+        annView.image = [UIImage imageNamed:@"carImg.png"];
+        
+        
+        //-------计算两点距离------ start
+        
+        BMKMapPoint locPoint = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(self.userLocation.location.coordinate.latitude, self.userLocation.location.coordinate.longitude));
+        
+        
+        BMKMapPoint currPoint = BMKMapPointForCoordinate(CLLocationCoordinate2DMake(self.coordinate.latitude, self.coordinate.longitude));
+        
+        CLLocationDistance distance = BMKMetersBetweenMapPoints(locPoint, currPoint);
+        //-------计算两点距离------ end
+        
+        
+        
+        //----- 自定义泡泡----------- start
+        UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 100)];
+        aView.backgroundColor = [UIColor yellowColor];
+        UILabel *lb = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 100)];
+        
+        lb.text = [NSString stringWithFormat:@"这是自定义的泡泡\n还有3分钟到达\n距您%.fkm", distance/1000];
+        lb.numberOfLines = 0;
+        lb.font = [UIFont systemFontOfSize:10];
+        [aView addSubview:lb];
+        BMKActionPaopaoView *paopaoView = [[BMKActionPaopaoView alloc] initWithCustomView:aView];
+        annView.paopaoView = paopaoView;
+        //----- 自定义泡泡----------- end
+        return annView;
+    }
+    return nil;
 }
+
+
+
+
+
+
 
 - (void)mapView:(BMKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
     
 }
+
+/**
+ * 当选中一个annotation views时，调用此接口
+ * @param mapView 地图View
+ * @param view 选中的annotation views
+ */
+- (void)mapView:(BMKMapView *)mapView didSelectAnnotationView:(BMKAnnotationView *)view
+{
+    
+  
+    
+}
+
+
+
 
 
 // test

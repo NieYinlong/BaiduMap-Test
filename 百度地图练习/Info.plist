@@ -7,7 +7,7 @@
 	<key>NSAppTransportSecurity</key>
 	<dict/>
 	<key>NSAllowsArbitraryLoads</key>
-	<true/>
+	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>访问位置</string>
 	<key>CFBundleDevelopmentRegion</key>
