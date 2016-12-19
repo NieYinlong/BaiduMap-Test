@@ -31,6 +31,8 @@
 
 @property (nonatomic, strong) UIImageView *centerImageView;
 
+@property (nonatomic, strong) UILabel *showLB;
+
 @end
 
 @implementation ViewController
@@ -239,21 +241,27 @@
     
     
     
-    // 中心动画
+    // 中心固定定位动画
     [UIView animateWithDuration:0.6 animations:^{
         _centerImageView.frame = CGRectMake((kScreenWidth-30)/2 , (kScreenHeight-30)/2 -20, 30, 30);
     } completion:^(BOOL finished) {
         _centerImageView.frame = CGRectMake((kScreenWidth-30)/2, (kScreenHeight-30)/2, 30, 30);
-        
+    }];
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        _centerImageView.frame = CGRectMake((kScreenWidth-30)/2 , (kScreenHeight-30)/2 -8, 30, 30);
+    } completion:^(BOOL finished) {
+        _centerImageView.frame = CGRectMake((kScreenWidth-30)/2, (kScreenHeight-30)/2, 30, 30);
     }];
     
     
+    self.showLB.alpha = 1;
     
+    /* start =================================================================*/
     CGFloat centerLongitude = self.mapView.region.center.longitude;
     CGFloat centerLatitude = self.mapView.region.center.latitude;     //当前屏幕显示范围的经纬度
     
     NSLog(@"%.5f====%.5f", centerLatitude, centerLongitude);
-    
     BMKGeoCodeSearch *search = [[BMKGeoCodeSearch alloc] init];
     search.delegate = self;
     CLLocationCoordinate2D coordinate2D;
@@ -262,8 +270,8 @@
     
     BMKReverseGeoCodeOption *op = [[BMKReverseGeoCodeOption alloc] init];
     op.reverseGeoPoint = coordinate2D;
-    [search reverseGeoCode:op];
-
+    [search reverseGeoCode:op];// 根据地理坐标获取地址信息, 会执行代理- (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
+    /* end  =================================================================*/
     
 }
 
@@ -276,10 +284,41 @@
  */
 - (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error {
     
-    NSLog(@"😆👌====== %@", result);
+    ///POI信息类
+    BMKPoiInfo *poi = result.poiList[0];
     
+    NSLog(@"\n😆👌%@\n%@\n%@\n%@\n%@",
+          result.address,
+          result.addressDetail.streetName,
+          result.businessCircle,
+          poi.name,
+          poi.address
+          );
+    
+    /*
+     打印结果
+     😆👌
+     result.address                   = 浙江省杭州市西湖区玉古路179-180号
+     result.addressDetail.streetName  = 玉古路
+     result.businessCircle            = 西湖,天目山路,黄龙
+     poi.name                         = 汇丰北楼
+     poi.address                      = 浙江省杭州市天目山路
+     */
+    
+    self.showLB.alpha = 1;
+    self.showLB.text = [NSString stringWithFormat:@"1分钟, %@", poi.name];
 }
 
+/// 展示的文本
+- (UILabel *)showLB {
+    if (!_showLB) {
+        _showLB = [[UILabel alloc] initWithFrame:CGRectMake((kScreenWidth-200)/2, (kScreenHeight-30)/2 - 33, 200, 45)];
+        _showLB.backgroundColor = [UIColor whiteColor];
+        [self.view addSubview:_showLB];
+        _showLB.alpha = 1;
+    }
+    return _showLB;
+}
 
 
 ///**
